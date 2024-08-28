@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koch Snowflake Fractal</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+            display: block;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="kochCanvas" width="800" height="800"></canvas>
+    <script>
+        const canvas = document.getElementById('kochCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function drawKochLine(x1, y1, x2, y2, depth) {
+            if (depth === 0) {
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            } else {
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                const x3 = x1 + dx / 3;
+                const y3 = y1 + dy / 3;
+                const x5 = x1 + 2 * dx / 3;
+                const y5 = y1 + 2 * dy / 3;
+                
+                const x4 = x3 + (dx - Math.sqrt(3) * dy) / 6;
+                const y4 = y3 + (dy + Math.sqrt(3) * dx) / 6;
+
+                drawKochLine(x1, y1, x3, y3, depth - 1);
+                drawKochLine(x3, y3, x4, y4, depth - 1);
+                drawKochLine(x4, y4, x5, y5, depth - 1);
+                drawKochLine(x5, y5, x2, y2, depth - 1);
+            }
+        }
+
+        function drawKochSnowflake(x, y, size, depth) {
+            const height = (Math.sqrt(3) * size) / 2;
+            const p1 = {x: x, y: y - height / 2};
+            const p2 = {x: x - size / 2, y: y + height / 2};
+            const p3 = {x: x + size / 2, y: y + height / 2};
+
+            drawKochLine(p1.x, p1.y, p2.x, p2.y, depth);
+            drawKochLine(p2.x, p2.y, p3.x, p3.y, depth);
+            drawKochLine(p3.x, p3.y, p1.x, p1.y, depth);
+        }
+
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw Koch Snowflake
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 2;
+        drawKochSnowflake(400, 400, 400, 4); // Adjust the last parameter to change depth
+    </script>
+</body>
+</html>
